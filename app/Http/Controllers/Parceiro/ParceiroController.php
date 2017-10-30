@@ -36,7 +36,15 @@ class ParceiroController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {        
+    {
+//        $validation = $this->c->validator->validate($request, [
+//            'email' => v::noWhitespace()->notEmpty(),
+//            'password' => v::notEmpty()
+//        ]);
+//
+//        if ($validation->failed())
+//            return $json = $response->withStatus(401);
+        
         $usuario = new Usuario();
         $usuario->fill(['nome' => $request->nome_usuario, 'senha' => $request->senha, 'email' => $request->email, 'status' => 1]);
         $usuario->save();
@@ -45,6 +53,8 @@ class ParceiroController extends Controller
         $parceiro->fill($request->all());
         $parceiro->usuario_id = $usuario->id;
         $parceiro->save();
+        
+//        $teste = Parceiro::where('id', '=', $parceiro->id)->with('User')->first();
         
         return response()->json($teste, 200);
     }
