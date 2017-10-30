@@ -16,4 +16,3 @@ Route::get('/', function () {
 });
 
 Route::resource('cadastro', 'Parceiro\ParceiroController');
-Route::post('parceiro', 'Parceiro\ParceiroController@store');
