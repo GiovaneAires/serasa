@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('cadastro', 'Parceiro\ParceiroController');
+Route::post('parceiro', 'Parceiro\ParceiroController@store');
