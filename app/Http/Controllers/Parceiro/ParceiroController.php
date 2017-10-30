@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Parceiro;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Validator;
+use App\Http\Requests\StoreParceiroRequest;
 use App\Parceiro;
 use App\Usuario;
 
@@ -37,16 +39,21 @@ class ParceiroController extends Controller
      */
     public function store(Request $request)
     {
-//        $validation = $this->c->validator->validate($request, [
-//            'email' => v::noWhitespace()->notEmpty(),
-//            'password' => v::notEmpty()
-//        ]);
-//
-//        if ($validation->failed())
-//            return $json = $response->withStatus(401);
+        $m = [
+            'required' => 'Esse campo é obrigatório.',
+            'max' => 'O tamanho máximo do campo foi ultrapassado.',
+            'email' => 'Email inválido.',
+        ];
+        
+        $rules = new StoreParceiroRequest();
+        $v = validator($request->all(), $rules->rules(), $m);
+
+        if ($v->fails()){
+            return response()->json($v->getMessageBag(), 422);
+        }
         
         $usuario = new Usuario();
-        $usuario->fill(['nome' => $request->nome_usuario, 'senha' => $request->senha, 'email' => $request->email, 'status' => 1]);
+        $usuario->fill(['nome' => $request->nome_usuario, 'senha' => $request->senha, 'email' => $request->email, 'situacao' => 1]);
         $usuario->save();
         
         $parceiro = new Parceiro();
@@ -56,7 +63,7 @@ class ParceiroController extends Controller
         
 //        $teste = Parceiro::where('id', '=', $parceiro->id)->with('User')->first();
         
-        return response()->json($teste, 200);
+        return response()->json('Cadastro realizado com sucesso', 200);
     }
 
     /**
