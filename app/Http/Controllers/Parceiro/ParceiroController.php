@@ -61,7 +61,7 @@ class ParceiroController extends Controller
         
         $parc = Parceiro::getParceiroCadastrado($request->cnpj, $request->email);
         if(count($parc)){
-            return response()->json("Parceiro já cadastrado.", 400);
+            return response()->json("Parceiro já cadastrado.", 409);
         }
         
         $usuario = new Usuario();
