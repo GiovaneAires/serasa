@@ -13,7 +13,7 @@ class ParceiroController extends Controller
 {
     
     private static $mensagens = [
-                        'required' => 'Esse campo é obrigatório.',
+                        'required' => 'Campo obrigatório não informado.',
                         'max' => 'O tamanho máximo do campo foi ultrapassado.',
                         'email' => 'Email inválido.',
                     ];
