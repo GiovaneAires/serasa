@@ -18,7 +18,8 @@ class ParceiroController extends Controller
      */
     public function index()
     {
-        return view('cadastro');
+        $parceiros = Parceiro::with('User')->get();
+        return response()->json($parceiros, 200);
     }
 
     /**
@@ -46,10 +47,19 @@ class ParceiroController extends Controller
         ];
         
         $rules = new StoreParceiroRequest();
+        $vr = validator($request->all(), $rules->required(), $m);
+        if ($vr->fails()){
+            return response()->json($vr->getMessageBag(), 400);
+        }
+        
         $v = validator($request->all(), $rules->rules(), $m);
-
         if ($v->fails()){
             return response()->json($v->getMessageBag(), 422);
+        }
+        
+        $parc = Parceiro::getParceiroCadastrado($request->cnpj, $request->email);
+        if(count($parc)){
+            return response()->json("Parceiro já cadastrado.", 400);
         }
         
         $usuario = new Usuario();
@@ -60,8 +70,6 @@ class ParceiroController extends Controller
         $parceiro->fill($request->all());
         $parceiro->usuario_id = $usuario->id;
         $parceiro->save();
-        
-//        $teste = Parceiro::where('id', '=', $parceiro->id)->with('User')->first();
         
         return response()->json('Cadastro realizado com sucesso', 200);
     }
