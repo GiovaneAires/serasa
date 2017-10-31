@@ -19,9 +19,9 @@ class Parceiro extends Model
     
     public static function getParceiroCadastrado($cnpj, $email) {
         return DB::table('usuarios')
-                ->join('parceiros', 'usuarios.id', '=', 'parceiros.usuario_id')
-                        ->where('cnpj', '=', $cnpj)
-                        ->orWhere('email', '=', $email)
-                        ->first();
+                    ->join('parceiros', 'usuarios.id', '=', 'parceiros.usuario_id')
+                    ->where('cnpj', '=', $cnpj)
+                    ->orWhere('email', '=', $email)
+                    ->first();
     }
 }
