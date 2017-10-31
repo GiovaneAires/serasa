@@ -11,6 +11,14 @@ use App\Usuario;
 
 class ParceiroController extends Controller
 {
+    
+    private static $mensagens = [
+                        'required' => 'Esse campo é obrigatório.',
+                        'max' => 'O tamanho máximo do campo foi ultrapassado.',
+                        'email' => 'Email inválido.',
+                    ];
+
+
     /**
      * Display a listing of the resource.
      *
@@ -39,20 +47,14 @@ class ParceiroController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $m = [
-            'required' => 'Esse campo é obrigatório.',
-            'max' => 'O tamanho máximo do campo foi ultrapassado.',
-            'email' => 'Email inválido.',
-        ];
-        
+    {   
         $rules = new StoreParceiroRequest();
-        $vr = validator($request->all(), $rules->required(), $m);
+        $vr = validator($request->all(), $rules->required(), self::$mensagens);
         if ($vr->fails()){
             return response()->json($vr->getMessageBag(), 400);
         }
         
-        $v = validator($request->all(), $rules->rules(), $m);
+        $v = validator($request->all(), $rules->rules(), self::$mensagens);
         if ($v->fails()){
             return response()->json($v->getMessageBag(), 422);
         }
