@@ -36,6 +36,7 @@ class StoreParceiroRequest extends FormRequest
     public function required()
     {
         return [
+            'cnpj' => 'required',
             'nome_fantasia' => 'required',
             'razao_social' => 'required',
             'nome_usuario' => 'required',
