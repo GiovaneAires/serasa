@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('parceiro/{id?}', 'Parceiro\ParceiroController@index');
-Route::post('parceiro', 'Parceiro\ParceiroController@store');
-Route::put('parceiro/{id}', 'Parceiro\ParceiroController@update');
-Route::delete('parceiro/{id}', 'Parceiro\ParceiroController@update');
+Route::get('parceiro', 'Parceiro\ParceiroController@index')->middleware('autenticar');
+Route::post('parceiro', 'Parceiro\ParceiroController@store')->middleware('autenticar');
+Route::put('parceiro', 'Parceiro\ParceiroController@update')->middleware('autenticar');
+Route::delete('parceiro', 'Parceiro\ParceiroController@update')->middleware('autenticar');

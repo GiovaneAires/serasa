@@ -24,13 +24,9 @@ class ParceiroController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id = null)
+    public function index(Request $request)
     {
-        if(empty($id))
-            $parceiros = Parceiro::with('User')->get();
-        else
-            $parceiros = Parceiro::where('id', '=', $id)->with('User')->first();
-        
+        $parceiros = Parceiro::where('id', '=', $request->id)->with('User')->first();
         return response()->json($parceiros, 200);
     }
 
@@ -112,11 +108,11 @@ class ParceiroController extends Controller
     public function update(Request $request, $id)
     {
         //USAR VALIDADOR
-        if(empty($id) || !is_numeric($id))
+        if(empty($request->id) || !is_numeric($request->id))
             return response()->json('Id do parceiro inválido, deve ser do tipo inteiro', 400);
         
         if($request->getMethod() == 'DELETE'){
-            Usuario::where('id', $id)
+            Usuario::where('id', $request->id)
                 ->update(['situacao' => 0]);
             
             return response()->json('Parceiro inativado com sucesso', 200);
@@ -132,10 +128,10 @@ class ParceiroController extends Controller
                 return response()->json($v->getMessageBag(), 422);
             }
 
-            Usuario::where('id', $id)
+            Usuario::where('id', $request->id)
                 ->update(['nome' => $request->nome_usuario, 'senha' => $request->senha, 'email' => $request->email, 'situacao' => $request->situacao]);
 
-            Parceiro::where('id', $id)
+            Parceiro::where('id', $request->id)
                 ->update(['cnpj' => $request->cnpj, 'nome_fantasia' => $request->nome_fantasia, 'razao_social' => $request->razao_social]);
             
             return response()->json('Parceiro atualizado com sucesso', 200);
