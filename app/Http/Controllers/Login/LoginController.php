@@ -24,20 +24,32 @@ class LoginController extends Controller
         
         $usuario = Usuario::where('nome', $request->nome_usuario)
                             ->where('senha', $request->senha);
+
         if(empty($usuario))
-            return response()->json("Usuário nã encontrado.", 404);
-        
+            return response()->json("Usuário não encontrado.", 404);
+
         $tokenUsuario = Token::where('usuario_id', '=', $usuario->id)->with('User')->first();
-        
-//        if(!empty($tokenUsuario->usuario_id))
-//            Token->delete
-        
-        
-//        $token = Token->cadastro;
-        return response()->json(['token' => $token], 200);
+
+        if(!empty($tokenUsuario->id))
+            Token::destroy($tokenUsuario->id);
+
+        $dataExpiracao = mktime (0, 0, 0, date("Y"),  date("m"),  date("d")+7);
+        $tk = hash($usuario->nome, $dataExpiracao);
+
+        $token = new Token();
+        $token->fill(['token' => $tk, 'expira_em' => $dataExpiracao]);
+        $token->usuario_id = $usuario->id;
+        $token->save();
+
+        return response()->json(['token' => $token->token], 200);
     }
     
-    public function logout(){
+    public function logout(Request $request){
+        $token = Token::where('token', $request->header('Authorization'));
         
+        if(!empty($token))
+            Token::destroy($token->id);
+        
+        return response()->json(['mensagem' => 'Parceiro deslogado.'], 200);
     }
 }

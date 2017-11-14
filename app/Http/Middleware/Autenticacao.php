@@ -24,7 +24,7 @@ class Autenticacao
             $request->merge(array("id" => $autorizacao['id']));
             $response = $next($request);
         }else{
-            $response = response()->json('ERRO', 401);
+            $response = response()->json('Usuário não está logado.', 401);
         }
         
         return $response;
