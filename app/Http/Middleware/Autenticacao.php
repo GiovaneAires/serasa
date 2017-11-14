@@ -16,16 +16,16 @@ class Autenticacao
      */
     public function handle($request, Closure $next)
     {
+        $token = new TokenController();
+        $autorizacao = array();
+        $autorizacao[] = $token->validarToken($request->header('Authorization'));
         
-        $request->header('Authorization');
-        
-        $autorizado = true;
-        $request->merge(array("id" => "3"));
-        
-        if($autorizado)
+        if($autorizacao['autorizado']){
+            $request->merge(array("id" => $autorizacao['id']));
             $response = $next($request);
-        else
+        }else{
             $response = response()->json('ERRO', 401);
+        }
         
         return $response;
     }

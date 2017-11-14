@@ -27,7 +27,8 @@ class ParceiroController extends Controller
     public function index(Request $request)
     {
         $parceiros = Parceiro::where('id', '=', $request->id)->with('User')->first();
-        return response()->json($parceiros, 200);
+        $response = !empty($parceiros) ? response()->json($parceiros, 200) : response()->json('Parceiro não encontrado', 400);
+        return $response;
     }
 
     /**
