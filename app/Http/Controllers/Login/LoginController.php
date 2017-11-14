@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Login;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTokenPut;
+use App\Http\Controllers\Autenticacao\TokenController;
 use App\Usuario;
 use App\Token;
 
@@ -33,11 +34,8 @@ class LoginController extends Controller
         if(!empty($tokenUsuario->id))
             Token::destroy($tokenUsuario->id);
 
-        $dataExpiracao = mktime (0, 0, 0, date("Y"),  date("m"),  date("d")+7);
-        $tk = hash($usuario->nome, $dataExpiracao);
-
         $token = new Token();
-        $token->fill(['token' => $tk, 'expira_em' => $dataExpiracao]);
+        $token->fill(TokenController::gerarToken());
         $token->usuario_id = $usuario->id;
         $token->save();
 

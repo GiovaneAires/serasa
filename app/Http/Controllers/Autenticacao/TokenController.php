@@ -15,4 +15,11 @@ class TokenController extends Controller
         $autorizacao['id'] = $tokenUsuario->usuario_id;
         return $autorizacao;
     }
+    
+    public static function gerarToken(){
+        $token = array();
+        $token['token'] = hash($usuario->nome, $dataExpiracao); 
+        $token['expira_em'] = mktime (0, 0, 0, date("Y"),  date("m"),  date("d")+7);
+        return $token;
+    }
 }
