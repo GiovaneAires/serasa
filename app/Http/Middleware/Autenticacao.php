@@ -17,14 +17,13 @@ class Autenticacao
     public function handle($request, Closure $next)
     {
         $token = new TokenController();
-        $autorizacao = array();
-        $autorizacao[] = $token->validarToken($request->header('Authorization'));
+        $autorizacao = $token->validarToken($request->header('Authorization'));
         
         if($autorizacao['autorizado']){
             $request->merge(array("id" => $autorizacao['id']));
             $response = $next($request);
         }else{
-            $response = response()->json('Usuário não está logado.', 401);
+            $response = response()->json(['mensagem' => 'Usuário não logado no sistema para realizar esta operação.'], 401);
         }
         
         return $response;

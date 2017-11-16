@@ -17,11 +17,12 @@ class Parceiro extends Model
         return $this->hasOne(new Usuario, 'id', 'usuario_id');
     }
     
-    public static function getParceiroCadastrado($cnpj, $email) {
+    public static function getParceiroCadastrado($cnpj, $email, $nome) {
         return DB::table('usuarios')
                     ->join('parceiros', 'usuarios.id', '=', 'parceiros.usuario_id')
                     ->where('cnpj', '=', $cnpj)
                     ->orWhere('email', '=', $email)
+                    ->orWhere('nome', '=', $nome)
                     ->first();
     }
 }

@@ -11,14 +11,6 @@ use App\Usuario;
 
 class ParceiroController extends Controller
 {
-    
-    private static $mensagens = [
-                        'required' => 'Campo obrigatório não informado.',
-                        'max' => 'O tamanho máximo do campo foi ultrapassado.',
-                        'email' => 'Email inválido.',
-                    ];
-
-
     /**
      * Display a listing of the resource.
      *
@@ -27,7 +19,8 @@ class ParceiroController extends Controller
     public function index(Request $request)
     {
         $parceiros = Parceiro::where('id', '=', $request->id)->with('User')->first();
-        $response = !empty($parceiros) ? response()->json($parceiros, 200) : response()->json('Parceiro não encontrado', 400);
+        $jsonParceiro = ["cnpj" => $parceiros->cnpj, "nome_fantasia" => $parceiros->nome_fantasia, "razao_social" => $parceiros->razao_social, "email" => $parceiros->user['email'], "nome_usuario" => $parceiros->user['nome']];
+        $response = !empty($parceiros) ? response()->json($jsonParceiro, 200) : response()->json('Parceiro não encontrado', 404);
         return $response;
     }
 
@@ -50,23 +43,24 @@ class ParceiroController extends Controller
     public function store(Request $request)
     {   
         $rules = new StoreParceiroRequest();
-        $vr = validator($request->all(), $rules->required(), self::$mensagens);
+        $vr = validator($request->all(), $rules->required());
         if ($vr->fails()){
-            return response()->json($vr->getMessageBag(), 400);
+            return response()->json(['mensagem' => 'Campo obrigatório não informado: ' . implode(',', $vr->errors()->keys())], 400);
         }
         
-        $v = validator($request->all(), $rules->rules(), self::$mensagens);
+        $v = validator($request->all(), $rules->rules());
         if ($v->fails()){
-            return response()->json($v->getMessageBag(), 422);
+            $mensagem = $v->errors()->keys()[0] == 'email' ? ['mensagem' => 'Email inválido'] : ['mensagem' => 'Atributo ultrapassou o tamanho máximo: ' . implode(',', $v->errors()->keys())];
+            return response()->json($mensagem, 422);
         }
         
-        $parc = Parceiro::getParceiroCadastrado($request->cnpj, $request->email);
+        $parc = Parceiro::getParceiroCadastrado($request->cnpj, $request->email, $request->nome_usuario);
         if(count($parc)){
-            return response()->json("Parceiro já cadastrado.", 409);
+            return response()->json(['mensagem' => 'Parceiro já cadastrado.'], 409);
         }
         
         $usuario = new Usuario();
-        $usuario->fill(['nome' => $request->nome_usuario, 'senha' => $request->senha, 'email' => $request->email, 'situacao' => 1]);
+        $usuario->fill(['nome' => $request->nome_usuario, 'senha' => hash('md5', $request->senha), 'email' => $request->email, 'situacao' => 1]);
         $usuario->save();
         
         $parceiro = new Parceiro();
@@ -106,7 +100,7 @@ class ParceiroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //USAR VALIDADOR
         if(empty($request->id) || !is_numeric($request->id))
@@ -116,26 +110,31 @@ class ParceiroController extends Controller
             Usuario::where('id', $request->id)
                 ->update(['situacao' => 0]);
             
-            return response()->json('Parceiro inativado com sucesso', 200);
+            return response()->json(['mensagem' => 'Parceiro inativado com sucesso'], 200);
         }else{
             $rules = new StoreParceiroRequest();
-            $vr = validator($request->all(), $rules->required(), self::$mensagens);
-            if ($vr->fails()){
-                return response()->json($vr->getMessageBag(), 400);
-            }
+//            $vr = validator($request->all(), $rules->required());
+//            if ($vr->fails()){
+//                return response()->json(['mensagem' => 'Campo obrigatório não informado: ' . implode(',', $vr->errors()->keys())], 400);
+//            }
 
-            $v = validator($request->all(), $rules->rules(), self::$mensagens);
+            $v = validator($request->all(), $rules->rules());
             if ($v->fails()){
-                return response()->json($v->getMessageBag(), 422);
+                $mensagem = $v->errors()->keys()[0] == 'email' ? ['mensagem' => 'Email inválido'] : ['mensagem' => 'Atributo ultrapassou o tamanho máximo: ' . implode(',', $v->errors()->keys())];
+                return response()->json($mensagem, 422);
             }
 
-            Usuario::where('id', $request->id)
-                ->update(['nome' => $request->nome_usuario, 'senha' => $request->senha, 'email' => $request->email, 'situacao' => $request->situacao]);
-
-            Parceiro::where('id', $request->id)
-                ->update(['cnpj' => $request->cnpj, 'nome_fantasia' => $request->nome_fantasia, 'razao_social' => $request->razao_social]);
+            $usuario = Usuario::find($request->id);
+            $usuario->senha = isset($request->senha) ? hash('md5',$request->senha) : $usuario->senha;
+            $usuario->email = isset($request->email) ? $request->email : $usuario->email;
+            $usuario->save();
             
-            return response()->json('Parceiro atualizado com sucesso', 200);
+            $parc = Parceiro::where('usuario_id', '=', $request->id)->with('User')->first();
+            $parc->nome_fantasia = isset($request->nome_fantasia) ? $request->nome_fantasia : $parc->nome_fantasia;
+            $parc->razao_social = isset($request->razao_social) ? $request->razao_social : $parc->razao_social;
+            $parc->save();
+            
+            return response()->json(['mensagem' => 'Parceiro atualizado com sucesso'], 200);
         }
     }
         

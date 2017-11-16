@@ -24,24 +24,20 @@ class StoreParceiroRequest extends FormRequest
     public function rules()
     {
         return [
-            'cnpj' => 'max:18',
             'nome_fantasia' => 'max:255',
             'razao_social' => 'max:255',
-            'nome_usuario' => 'max:255',
-            'senha' => 'max:255',
             'email' => 'email|max:255',
+            'senha' => 'max:255',
         ];
     }
     
     public function required()
     {
         return [
-            'cnpj' => 'required',
             'nome_fantasia' => 'required',
             'razao_social' => 'required',
-            'nome_usuario' => 'required',
-            'senha' => 'required',
             'email' => 'required',
+            'senha' => 'required',
         ];
     }
 }
