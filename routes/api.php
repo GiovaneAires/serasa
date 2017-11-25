@@ -25,3 +25,9 @@ Route::delete('parceiro', 'Parceiro\ParceiroController@update')->middleware('aut
 
 Route::put('login', 'Login\LoginController@login');
 Route::put('logout', 'Login\LoginController@logout')->middleware('autenticar');
+
+
+Route::post('cliente', 'Cliente\ClienteController@store')->middleware('autenticar');
+Route::get('cliente', 'Cliente\ClienteController@index')->middleware('autenticar');
+Route::put('cliente', 'Cliente\ClienteController@update')->middleware('autenticar');
+Route::delete('cliente', 'Cliente\ClienteController@update')->middleware('autenticar');

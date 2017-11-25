@@ -23,7 +23,7 @@ class ParceiroController extends Controller
         $response = !empty($parceiros) ? response()->json($jsonParceiro, 200) : response()->json('Parceiro não encontrado', 404);
         return $response;
     }
-
+    
     /**
      * Show the form for creating a new resource.
      *

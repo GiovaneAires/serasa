@@ -15,11 +15,11 @@ class CreateParceirosTable extends Migration
     {
         Schema::create('parceiros', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('cnpj', 18)->unique();
-            $table->string('nome_fantasia', 255);
-            $table->string('razao_social', 255);
-            $table->integer('usuario_id')->unsigned();
-            $table->foreign('usuario_id')->references('id')->on('usuarios');
+                $table->string('cnpj', 18)->unique();
+                $table->string('nome_fantasia', 255);
+                $table->string('razao_social', 255);
+                $table->integer('usuario_id')->unsigned();
+                $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->timestamps();
         });
     }
