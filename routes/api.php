@@ -31,3 +31,8 @@ Route::post('cliente', 'Cliente\ClienteController@store')->middleware('autentica
 Route::get('cliente', 'Cliente\ClienteController@index')->middleware('autenticar');
 Route::put('cliente', 'Cliente\ClienteController@update')->middleware('autenticar');
 Route::delete('cliente', 'Cliente\ClienteController@update')->middleware('autenticar');
+
+Route::post('tipo_titulo', 'TipoTitulo\ClienteController@store')->middleware('autenticar');
+Route::get('tipo_titulo', 'TipoTitulo\ClienteController@index')->middleware('autenticar');
+Route::put('tipo_titulo', 'TipoTitulo\ClienteController@update')->middleware('autenticar');
+Route::delete('tipo_titulo', 'TipoTitulo\ClienteController@update')->middleware('autenticar');
