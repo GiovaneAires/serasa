@@ -24,6 +24,7 @@ class StoreRequestCliente extends FormRequest
     public function rules()
     {
         return [
+            'nome_cliente'=>'max:255',
             'cpf' =>'max:11',                        
         ];
     }
@@ -31,7 +32,7 @@ class StoreRequestCliente extends FormRequest
     public function  required()
     {
         return [
-         'nome'=>'required',
+         'nome_cliente'=>'required',
          'cpf' =>'required',
         
         ];

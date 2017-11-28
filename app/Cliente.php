@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-    protected $fillable = ['cpf', 'nome_cliente'];
+    protected $fillable = ['nome_cliente', 'cpf'];
     
     public function cliente(){
         return $this->belongsTo('App\Cliente', 'id', 'cliente_id');

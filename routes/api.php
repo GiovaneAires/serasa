@@ -29,8 +29,8 @@ Route::put('logout', 'Login\LoginController@logout')->middleware('autenticar');
 
 Route::post('cliente', 'Cliente\ClienteController@store')->middleware('autenticar');
 Route::get('cliente', 'Cliente\ClienteController@index')->middleware('autenticar');
-Route::put('cliente', 'Cliente\ClienteController@update')->middleware('autenticar');
-Route::delete('cliente', 'Cliente\ClienteController@update')->middleware('autenticar');
+Route::put('cliente/{id?}', 'Cliente\ClienteController@update')->middleware('autenticar');
+Route::delete('cliente/{id?}', 'Cliente\ClienteController@update')->middleware('autenticar');
 
 Route::post('tipo_titulo', 'TipoTitulo\ClienteController@store')->middleware('autenticar');
 Route::get('tipo_titulo', 'TipoTitulo\ClienteController@index')->middleware('autenticar');
