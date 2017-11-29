@@ -12,8 +12,8 @@ class ClienteController extends Controller
     
     public function index()
     {
-        $cliente = Cliente::where('id', '=', $request->id)->with('User')->first();
-        $jsonCliente = ["cpf" => $clientes->cpf, "nome_cliente" => $clientes->user['nome_cliente']];
+        $clientes = Cliente::all(); // where('id', '=', $request->id)->with('User')->first();
+        $jsonCliente = ['nome_cliente' => $clientes->nome_cliente, 'cpf' => $clientes->cpf, 'id_cliente' => $clientes->id];
         $response = !empty($clientes) ? response()->json($jsonCliente, 200) : response()->json('Cliente não encontrado', 404);
         return $response;
     }
@@ -94,27 +94,21 @@ class ClienteController extends Controller
     {
          if(empty($id) || !is_numeric($id))
             return response()->json('Id do cliente inválido, deve ser do tipo inteiro', 400);
-        
-        if($request->getMethod() == 'DELETE'){
-            
-           return response()->json(['mensagem' => 'Cliente inativado com sucesso'], 200);
-           
-        }else{
-            $rules = new StoreRequestCliente();
+       
+        $rules = new StoreRequestCliente();
 
-            $v = validator($request->all(), $rules->rules());
-            if ($v->fails()){
-                $mensagem = $v->errors()->keys()[0] == 'cpf' ? ['mensagem' => 'CPF inválido'] : ['mensagem' => 'Atributo ultrapassou o tamanho máximo: ' . implode(',', $v->errors()->keys())];
-                return response()->json($mensagem, 422);
-            }
-          
-            $cli = \App\Cliente::where('cliente_id', '=', $request->id)->with('User')->first();
-            $cli->nome_cliente = isset($request->nome_cliente) ? $request->nome_cliente : $cli->nome_cliente;
-            $cli->cpf = isset($request->cpf) ? $request->cpf : $cli->cpf;
-            $cli->save();
-            
-            return response()->json(['mensagem' => 'Cliente atualizado com sucesso'], 200);
+        $v = validator($request->all(), $rules->rules());
+        if ($v->fails()){
+            $mensagem = $v->errors()->keys()[0] == 'cpf' ? ['mensagem' => 'CPF inválido'] : ['mensagem' => 'Atributo ultrapassou o tamanho máximo: ' . implode(',', $v->errors()->keys())];
+            return response()->json($mensagem, 422);
         }
+
+        $cli = Cliente::where('cliente_id', '=', $request->id)->with('User')->first();
+        $cli->nome_cliente = isset($request->nome_cliente) ? $request->nome_cliente : $cli->nome_cliente;
+        $cli->cpf = isset($request->cpf) ? $request->cpf : $cli->cpf;
+        $cli->save();
+
+        return response()->json(['mensagem' => 'Cliente atualizado com sucesso'], 200);
     }
 
     /**
@@ -125,6 +119,9 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //implementar validação
+        
+        Cliente::destroy($id);
+        return response()->json('Cliente excluído com sucesso', 200);
     }
 }
