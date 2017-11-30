@@ -13,7 +13,10 @@ class ClienteController extends Controller
     public function index()
     {
         $clientes = Cliente::all(); // where('id', '=', $request->id)->with('User')->first();
-        $jsonCliente = ['nome_cliente' => $clientes->nome_cliente, 'cpf' => $clientes->cpf, 'id_cliente' => $clientes->id];
+        
+        foreach ($clientes as $cliente)
+            $jsonCliente = ["nome_cliente" => $cliente->nome_cliente, "cpf" => $cliente->cpf, "id_cliente" => $cliente->id];
+        
         $response = !empty($clientes) ? response()->json($jsonCliente, 200) : response()->json('Cliente não encontrado', 404);
         return $response;
     }
@@ -103,7 +106,7 @@ class ClienteController extends Controller
             return response()->json($mensagem, 422);
         }
 
-        $cli = Cliente::where('cliente_id', '=', $request->id)->with('User')->first();
+        $cli = Cliente::where('id', '=', $id)->with('User')->first();
         $cli->nome_cliente = isset($request->nome_cliente) ? $request->nome_cliente : $cli->nome_cliente;
         $cli->cpf = isset($request->cpf) ? $request->cpf : $cli->cpf;
         $cli->save();

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Cliente extends Model
 {
@@ -17,8 +18,8 @@ class Cliente extends Model
     }
     
     public static function getClienteCadastrado($cpf, $nome_cliente) {
+        
         return DB::table('clientes')
-                    ->join('cliente', 'cliente.id', '=', 'clientes.cliente_id')
                     ->where('cpf', '=', $cpf)
                     ->orWhere('nome_cliente', '=', $nome_cliente)
                     ->first();

@@ -19,7 +19,7 @@ class CreateTitulosTable extends Migration
             $table->foreign('parceiro_id')->references('id')->on('parceiros');
             $table->integer('cliente_id')->unsigned();
             $table->foreign('cliente_id')->references('id')->on('clientes');
-            $tabler->double('valor', 8, 2);
+            $table->double('valor', 8, 2);
             $table->string('descricao', 255);
             $table->dateTime('data_emissao');
             $table->dateTime('data_pagamento');
