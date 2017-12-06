@@ -24,4 +24,12 @@ class Cliente extends Model
                     ->orWhere('nome_cliente', '=', $nome_cliente)
                     ->first();
     }
+    
+    public static function getTituloCpf($cpf){
+        return DB::table('clientes')
+                ->join('titulos', 'clientes.id', '=', 'titulos.cliente_id')
+                ->select('titulos.*')
+                ->where('cpf', '=', $cpf)
+                ->get();
+    }
 }

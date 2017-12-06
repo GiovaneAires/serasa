@@ -26,7 +26,7 @@ Route::put('login', 'Login\LoginController@login');
 Route::put('logout', 'Login\LoginController@logout')->middleware('autenticar');
 
 Route::post('cliente', 'Cliente\ClienteController@store')->middleware('autenticar');
-Route::get('cliente', 'Cliente\ClienteController@index')->middleware('autenticar');
+Route::get('cliente/{id?}', 'Cliente\ClienteController@index')->middleware('autenticar');
 Route::put('cliente/{id?}', 'Cliente\ClienteController@update')->middleware('autenticar');
 Route::delete('cliente/{id?}', 'Cliente\ClienteController@destroy')->middleware('autenticar');
 
@@ -34,3 +34,7 @@ Route::post('titulo', 'Titulo\TituloController@store')->middleware('autenticar')
 Route::get('titulo', 'Titulo\TituloController@index')->middleware('autenticar');
 Route::put('titulo/{id?}', 'Titulo\TituloController@update')->middleware('autenticar');
 Route::delete('titulo/{id?}', 'Titulo\TituloController@destroy')->middleware('autenticar');
+
+Route::get('consulta/cliente/{cpf}', 'Cliente\ClienteController@consultaCpf');
+Route::get('consulta/parceiro/{cpf}', 'Parceiro\ParceiroController@consultaCpf')->middleware('autenticar');
+Route::get('consulta/situacao/{cpf}/{i}', 'Parceiro\ParceiroController@consultaCpf')->middleware('autenticar');

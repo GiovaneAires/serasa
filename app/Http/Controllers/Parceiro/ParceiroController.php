@@ -23,7 +23,7 @@ class ParceiroController extends Controller
         $response = !empty($parceiros) ? response()->json($jsonParceiro, 200) : response()->json('Parceiro não encontrado', 404);
         return $response;
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -147,5 +147,28 @@ class ParceiroController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    public function consultaCpf(Request $request){
+        
+        $titulos = Parceiro::getTituloCpf($request->cpf, $request->i);
+        
+        if(count($titulos) == 0)
+            return response()->json(['mensagem' => 'Nenhum título encontrado.'], 404);
+
+        foreach ($titulos as $titulo){
+            $jsonTitulos[] = [
+                "id_titulo" => $titulo->id,
+                "id_parceiro" => $titulo->parceiro_id,
+                "id_cliente" => $titulo->cliente_id,
+                "situacao" => $titulo->situacao,
+                "descricao" => $titulo->descricao,
+                "valor" => $titulo->valor,
+                "data_pagamento" => $titulo->data_pagamento,
+                "data_emissao" => $titulo->data_emissao,
+            ];
+        }
+        
+        return response()->json($jsonTitulos, 200);
     }
 }

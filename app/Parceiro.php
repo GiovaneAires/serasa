@@ -25,4 +25,22 @@ class Parceiro extends Model
                     ->orWhere('nome', '=', $nome)
                     ->first();
     }
+    
+    public static function getTituloCpf($cpf, $situacao = null){
+        
+        if(!is_null($situacao)){
+            return DB::table('clientes')
+                    ->join('titulos', 'clientes.id', '=', 'titulos.cliente_id')
+                    ->select('titulos.*')
+                    ->where('cpf', '=', $cpf)
+                    ->where('situacao', '=', $situacao)
+                    ->get();
+        }else{
+            return DB::table('clientes')
+                    ->join('titulos', 'clientes.id', '=', 'titulos.cliente_id')
+                    ->select('titulos.*')
+                    ->where('cpf', '=', $cpf)
+                    ->get();
+        }
+    }
 }

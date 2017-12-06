@@ -19,8 +19,9 @@ class CreateTitulosTable extends Migration
             $table->foreign('parceiro_id')->references('id')->on('parceiros');
             $table->integer('cliente_id')->unsigned();
             $table->foreign('cliente_id')->references('id')->on('clientes');
-            $table->double('valor', 8, 2);
+            $table->decimal('valor', 8, 2);
             $table->string('descricao', 255);
+            $table->integer('situacao');
             $table->dateTime('data_emissao');
             $table->dateTime('data_pagamento');
             $table->timestamps();
